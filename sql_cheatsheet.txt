@@ -1,0 +1,466 @@
+SELECT - extracts data from a database
+UPDATE - updates data in a database
+DELETE - deletes data from a database
+INSERT INTO - inserts new data into a database
+CREATE DATABASE - creates a new database
+ALTER DATABASE - modifies a database
+CREATE TABLE - creates a new table
+ALTER TABLE - modifies a table
+DROP TABLE - deletes a table
+CREATE INDEX - creates an index (search key)
+DROP INDEX - deletes an index
+
+---SELECT---
+-> SELECT column1,column2... FROM table_name;
+>>returns column1 and column2 entries from table_name
+
+-> SELECT * FROM table_name;
+>>returns all column entries from table_name
+
+-> SELECT DISTINCT column1,column2... FROM table_name;
+>>returns entries from column1 and column2 without any duplicates
+
+->SELECT COUNT(DISTINCT column1) FROM table_name
+>>returns total number of distinct values in column1
+
+->SELECT COUNT(*) AS alias_for_column1 FROM (SELECT DISTINCT column1 FROM table_name);
+>>returns total number of distinct values in column1 and gives column1 an alias name as provided
+
+->SELECT * FROM table_name WHERE condition;
+>>returns all column entries from table_name wich satisfy the condition
+
+Note: The WHERE clause is not only used in SELECT statements but also used in UPDATE,DELETE,etc.
+->WHERE OPERATORS
+->SELECT * FROM table_name WHERE age=18;
+->SELECT * FROM table_name WHERE age<18;
+->SELECT * FROM table_name WHERE age>18;
+->SELECT * FROM table_name WHERE age>=18;
+->SELECT * FROM table_name WHERE age<=18;
+->SELECT * FROM table_name WHERE age<>18;
+->SELECT * FROM table_name WHERE age BETWEEN 15 AND 20;
+->SELECT * FROM table_name WHERE age NOT BETWEEN 15 AND 20;
+->SELECT * FROM table_name WHERE city LIKE 's%';
+->SELECT * FROM table_name WHERE city IN ('Mumbai','Navi Mumbai');
+->SELECT * FROM table_name WHERE city NOT IN ('Mumbai','Navi Mumbai');
+->SELECT * FROM table_name WHERE condition1 AND condition2 AND condition3 ...;
+->SELECT * FROM table_name WHERE condition1 OR condition2 OR condition3 ...;
+->SELECT * FROM table_name WHERE NOT condition1;
+->SELECT * FROM table_name WHERE column1 IS NULL;
+->SELECT * FROM table_name WHERE column1 IS NOT NULL;
+
+->SELECT * FROM table_name ORDER BY column1, column2, ... ASC|DESC; 
+>>returns sorted table by column1,column2,... based on what was provided ASC or DESC
+
+---INSERT---
+->INSERT INTO table_name VALUES (value1, value2, value3, ...);
+>>inserts values in our created table
+
+->INSERT INTO table_name (column1, column2, column3, ...) VALUES (value1, value2, value3, ...);
+>>inserts value in specific columns in our created table
+
+---UPDATE---
+->UPDATE table_name SET column1=value1,value2,... ;
+>>all records in column1 will be updated
+
+->UPDATE table_name SET column1=value1,value2,... WHERE condition;
+>>all records in column1 that satisfy the condition will get updated
+
+---DELETE---
+->DELETE FROM table_name;
+>>all records in table_name will be deleted, delets all rows without deleting the table structure
+
+->DELETE FROM table_name WHERE condition;
+>>records thats satisfy the condition will be deleted
+
+Note: Not all database systems support the SELECT TOP clause. MySQL supports the LIMIT clause to select a limited number of records, while Oracle uses FETCH FIRST n ROWS ONLY and ROWNUM.
+
+->SQL Server /MS Acess:
+->SELECT TOP number|percent column_name(s) FROM table_name WHERE condition;
+
+->MySQL
+->SELECT column_name(s) FROM table_name WHERE condition LIMIT number;
+
+->Oracle
+->SELECT column_name(s) FROM table_name ORDER BY column_name(s) FETCH FIRST number ROWS ONLY;
+
+->SELECT MIN(column_name) FROM table_name WHERE condition;
+>>returns minimum value from selected column
+
+->SELECT MAX(column_name) FROM table_name WHERE condition;
+>>returns maximum value from selected column
+
+->SELECT MIN(column_name) AS min_value FROM table_name WHERE condition;
+>>returns minimum value from selected column with an alias name
+
+->SELECT MAX(column_name) AS max_value FROM table_name WHERE condition;
+>>returns maximum value from selected column with an alias name
+
+->SELECT COUNT(column_name) FROM table_name WHERE condition;
+>>returns number of values in specified column
+
+->SELECT AVG(column_name) FROM table_name WHERE condition;
+>>returns average of values in specified column
+
+->SELECT SUM(column_name) FROM table_name WHERE condition;
+>>returns sum of values in specified column
+
+->SELECT * FROM table_name WHERE column1 LIKE pattern;
+>>returns values from column1 that match with pattern that involve:
+
+---PATTERN---
+
+	'a%'		any values that start with a
+	'%a'		any values that ends with a 
+	'%or%'		any values that has or in any position 
+	'_r'		any values that has r in second position
+	'a__%'		any values that start with a and are at least 3 chars in length
+	'a%o'		any values that start with a and ends with o
+
+---WILDCARDS---
+%	zero or more characters		bl% finds bl, black, blue, and blob
+_	a single character			h_t finds hot, hat, and hit
+[]	any single char within the brackets	h[oa]t finds hot and hat, but not hit
+^	any character not in the brackets	h[^oa]t finds hit, but not hot and hat
+-	any single character within range	c[a-b]t finds cat and cbt
+
+---IN, NOT IN---
+->SELECT column_name(s) FROM table_name WHERE column_name IN (SELECT STATEMENT);
+->SELECT column_name(s) FROM table_name WHERE column_name NOT IN (SELECT STATEMENT);
+
+---ALIAS---
+->SELECT column_name AS alias_name FROM table_name;
+>>return column entries with an alias(temporary name) for specified column
+
+->SELECT column_name(s) FROM table_name AS alias_name;
+>>return column entries with an alias(temporary name)  name for table
+
+---JOINS---
+
+--INNER JOIN--
+->SELECT * FROM table1 INNER JOIN table2 ON table1.common_column1=table2.common_column2;
+>>returns all records from the left table that matches common_column entries in the right table. (intersection of 2 tables)
+
+->SELECT * FROM ((table1 INNER JOIN table2 ON table1.common_column1=table2.common_column2) INNER JOIN table3 ON table1.common_column1=table3.common_column3);
+>>returns entries from three tables that have similar common_column values (intersection of 3 tables)
+
+--LEFT JOIN / LEFT OUTER JOIN--
+->SELECT * FROM table1 LEFT JOIN table2 ON table1.common_column1=table2.common_column2;
+>>returns all records from the left table, even if there are no matches in the right table.
+
+Note: In some databases LEFT JOIN is called LEFT OUTER JOIN.
+
+--RIGHT JOIN / RIGHT OUTER JOIN--
+->SELECT * FROM table1 RIGHT JOIN table2 ON table1.common_column1=table2.common_column2;
+>>returns all records from the right table, even if there are no matches in the left table.
+
+Note: In some databases RIGHT JOIN is called RIGHT OUTER JOIN.
+
+--FULL JOIN / FULL OUTER JOIN--
+->SELECT * FROM table1 FULL OUTER JOIN table2 ON table1.column_name = table2.column_name WHERE condition;
+>>
+
+Note: FULL OUTER JOIN and FULL JOIN are the same.
+
+--SELF JOIN--
+->SELECT * FROM table1 t1, table1 t2 WHERE condition;
+>>table joins with it self and returns entries based on condition
+
+---UNION---
+->SELECT * FROM table1 UNION SELECT * FROM table2;
+>>combines result of two select statements provided:
+1.every select statement within union has similar no. of columns
+2.every column has similar data type
+3.every column bust be in same order
+
+Note: The UNION operator selects only distinct values by default. To allow duplicate values, use UNION ALL
+
+->SELECT * FROM table1 UNION ALL SELECT * FROM table2;
+>>allows duplicate values
+
+->SELECT * FROM table1 WHERE condition UNION SELECT * FROM table2 WHERE condition;
+>>union with a condition
+
+---GROUP BY---
+->SELECT * FROM table1 GROUP BY column1;
+>>groups similar elements in column1 together
+
+->SELECT COUNT(*) FROM table1 GROUP BY column1;
+>>groups similar elements in column1 together and counts number of elements in each group
+
+->SELECT * FROM table1 GROUP BY column1 ORDER BY COUNT(*);
+>>groups similar elements in column1 together and then orders them based on count of elements in each group, default orders is ascending
+
+---HAVING---
+->SELECT * FROM table_name GROUP BY column1 HAVING condition;
+>>returns entries that satisfy the condition, difference between where and having is that having works with aggregate functions such as count, sum,etc. eg GROUP BY column1 HAVING SUM(*)>10. Group by is required before having clause.
+
+---EXISTS---
+->SELECT * FROM table_name WHERE EXISTS (SELECT column_name FROM table_name WHERE condition);
+>>EXISTS operator is used to test for the existence of any record in a subquery and it returns TRUE if the subquery returns one or more records.
+
+---ANY ALL---
+->SELECT * FROM table_name WHERE column_name operator ANY (SELECT column_name FROM table_name WHERE condition);
+>>return boolean value, true if any of subquery value meets condition i.e condition becomes true if operation is true for any of the value in the range. 
+
+Note: Operator is standard comparison operators
+
+->SELECT * FROM table_name WHERE column_name operator ALL (SELECT column_name FROM table_name WHERE condition);
+>>return boolean value, true if all of subquery value meets condition i.e condition becomes true if operation is true for all of the value in the range.
+
+---SELECT INTO---
+->SELECT * INTO new_table FROM old_table WHERE condition;
+>>copies contents from one table to another table in same database based on specific condition
+
+->SELECT column1,column2,... INTO new_table [IN externaldb] FROM old_table WHERE condition;
+>>copies contents of specific columns from one table to another table in same database based on specific condition
+
+->SELECT * INTO new_table IN externalddb_name FROM old_table WHERE condition;
+>>copies contents from one table to another table in different database based on specific condition
+
+->SELECT * INTO new_table FROM old_table WHERE 1 = 0;
+>>to create a new, empty table using the schema of another. Just add a WHERE clause that causes the query to return no data.
+
+---INSERT INTO SELECT---
+->INSERT INTO table2 SELECT * FROM table1 WHERE condition;
+>>copy data from one table into another provided the datatype in source and target table match.
+
+->INSERT INTO table2 SELECT column1,column2,... FROM table1 WHERE condition;
+>>copy data from one tables specific columns into another provided the datatype in source and target table match.
+
+---CASE---
+->SELECT * 
+    CASE
+    WHEN condition1 THEN result1
+    WHEN condition2 THEN result2
+    WHEN conditionN THEN resultN
+    ELSE result
+    END
+    FROM table_name;
+>>works like if and else statement, result can be string  to be printed out.
+e.g.
+SELECT CustomerName, City, Country
+FROM Customers
+ORDER BY
+(CASE
+    WHEN City IS NULL THEN Country
+    ELSE City
+END);
+
+---NULL FUNCTIONS---
+--MYSQL
+->SELECT *,IFNULL(column_that_might_b_null, default_value)) FROM table_name;
+>>sets a default value if specific column has null value in it
+
+->SELECT *,COALESCE(column_that_might_b_null, default_value)) FROM table_name;
+>>sets a default value if specific column has null value in it
+
+--SQL SERVER
+->SELECT *,ISNULL(column_that_might_b_null, default_value)) FROM table_name;
+>>sets a default value if specific column has null value in it
+
+--ORACLE
+->SELECT *,NVL(column_that_might_b_null, default_value)) FROM table_name;
+>>sets a default value if specific column has null value in it
+
+---STORED PROCEDURES---
+--prepared sql code that can be used over and over again like a function
+
+->CREATE PROCEDURE procedure_name AS sql_statement GO;
+>>stores a procedure
+ 
+->EXEC procedure_name
+>>executes a procedure
+
+->CREATE PROCEDURE procedure_name @param1 datatype @param2 datatype AS SELECT * FROM table_name WHERE column1=@param1 AND column2=@param2 GO;
+
+->EXEC procedure_name @param1=value @param2=value;
+
+---ARITHMETIC OPERATORS---
+->SELECT M + N;
+->SELECT M - N;
+->SELECT M * N;
+->SELECT M / N;
+->SELECT M % N;
+
+---BITWISE OPERATORS---
+->SELECT M & N;
+->SELECT M | N;
+->SELECT M ^ N;
+
+---COMPARISON OPERATORS---
+->SELECT M = N;
+->SELECT M > N;
+->SELECT M < N;
+->SELECT M >= N;
+->SELECT M <= N;
+->SELECT M <> N;
+
+---DATABASE---
+->CREATE DATABASE database_name;
+>>creates a database, make sure you have admin privilege before creating db
+
+->SHOW DATABASES;
+>>returns names of all existing dbs
+
+->DROP DATABASE database_name;
+>>drops an existing db
+
+->BACKUP DATABASE database_name TO DISK = 'filepath';
+>>creates a full backup of an existing sql db to provided path on disk
+
+->BACKUP DATABASE databasename TO DISK = 'filepath' WITH DIFFERENTIAL;
+>>instead of storing whole db again and again, differential backup stores only parts that have changed since the last full db backup.
+
+---TABLE---
+->CREATE TABLE table_name(column1 datatype, column2 datatype,...);
+>>creates table
+
+->CREATE TABLE new_table_name AS SELECT column1,column2,... FROM existing_table_name WHERE condition;
+>>create table from an existing table based on certain condition;
+
+->DROP TABLE table_name;
+>>drop an existing table from db
+
+->TRUNCATE TABLE table_name;
+>>used to delete data inside a table but not the table itself
+
+---ALTER TABLE---
+
+->ALTER TABLE table_name ADD column_name datatype;
+>>adds new column to an existing table
+
+->ALTER TABLE table_name DROP column_name;
+>>drops specific column from an existing table
+
+->ALTER TABLE table_name ALTER COLUMN column_name datatype;
+>>to change datatype of a column of an existing table in sql server
+
+->ALTER TABLE table_name MODIFY COLUMN column_name datatype;
+>>to change datatype of a column of an existing table in mysql
+
+->ALTER TABLE table_name MODIFY column_name datatype;
+>>to change datatype of a column of an existing table in oracle
+
+---CONSTRAINTS---
+->CREATE TABLE table_name (column1 datatype constraint, column2 datatype constraint,...);
+>>adding constraints while creating the table itself, constraints can be column or table level.
+
+->ALTER TABLE table_name MODIFY column_name datatype constraint;
+>>add constraint to column of an existing table
+
+NOT NULL		ensures that column cannot have null values
+UNIQUE			ensures that all values in column are unique
+PRIMARY KEY		combination of not null and unique
+FOREIGN KEY		prevent actions that would destroy links between tables
+CHECK			ensures that value in column satisfies specific condition
+DEFAULT			sets default if no value provided
+CREATE INDEX		used to create and retries data from db quickly
+AUTO_INCREMENT		increments value of column automatically
+
+->CREATE TABLE table1(
+	column1 datatype PRIMARY KEY,
+	column2 datatype NOT NULL,
+	column3 datatype,
+	FOREIGN KEY (column3) REFERENCES table2(primary_key_of_table2)
+);
+>>foreign key while creating table
+
+->ALTER TABLE table1 ADD FOREIGN KEY(column3) REFERENCES table2(primary_key_of_table2);
+>>adds foreign key to existing table
+
+---DATES---
+->MySQL comes with the following data types for storing a date or a date/time value in the database:
+DATE - format YYYY-MM-DD
+DATETIME - format: YYYY-MM-DD HH:MI:SS
+TIMESTAMP - format: YYYY-MM-DD HH:MI:SS
+YEAR - format YYYY or YY
+
+->SQL Server comes with the following data types for storing a date or a date/time value in the database:
+DATE - format YYYY-MM-DD
+DATETIME - format: YYYY-MM-DD HH:MI:SS
+SMALLDATETIME - format: YYYY-MM-DD HH:MI:SS
+TIMESTAMP - format: a unique number
+
+---VIEW---
+->CREATE VIEW view_name AS SELECT * FROM table_name WHERE condition;
+>>creates view i.e. virtual table based on result from select
+
+->CREATE OR REPLACE VIEW view_name AS SELECT column1,column2,... FROM table_name WHERE condition;
+>>updates a view
+
+->DROP VIEW view_name;
+>>drops existing view
+
+---PROTECT FROM SQL INJECTION---
+->use sql parameters represented with @ in sql
+txtUserId = getRequestString("UserId");
+txtSQL = "SELECT * FROM Users WHERE UserId = @0";
+db.Execute(txtSQL,txtUserId);
+
+---DATATYPES---
+CHAR			default is 1
+VARCHAR(size)		variable length string
+BINARY(size)		default is 1
+VARBINARY(size)		stores binary byte strings
+TINYBLOB		for binary large objects blobs
+TINYTEXT			string with max len of 255 chars
+TEXT(size)		string with max len 65535 bytes
+BLOB(size)		for binary large objects
+MEDIUMTEXT		
+MEDIUMBLOB
+LONGTEXT
+LONGBLOB
+ENUM(VAL1,VAL2,...)	string object that can have only one value from list of possible values
+SET(VAL1,VAL2,...)		string object that an have 0 or more values from list of possible values
+BIT(size)			bit value type
+TINYINT(size)		very small integer 2**8
+BOOL			0 is false 1 is true
+BOOLEAN		same as bool
+SMALLINT(size)		small integer
+MEDIUMINT(size)		medium int
+INT(size)
+INTEGER(size)
+BIGINT(size)		large int
+FLOAT(size,d)		size is total no of digits and d is digits after decimal
+FLOAT(p)			floating point number, if 0<p<24 is float if 25<p<53 is double
+DOUBLE(size,d)		normal size floating point num
+DOUBLE PRECISION(size,d)		
+DECIMAL(size,d)
+DEC(size,d)
+DATE			YYYY-MM-DD
+DATETIME(fsp)		YYYYY-MM-DD hh:mm:ss
+TIMESTAMP(fsp)		YYYYY-MM-DD hh:mm:ss
+TIME(fsp)			hh:mm:ss
+YEAR			YYYY
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
